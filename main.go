@@ -1,15 +1,21 @@
 package main
 
 import (
-    "io"
-    "net/http"
+        "fmt"
+        "github.com/validatepolicy/service"
+        "github.com/validatepolicy/dbclient"
 )
 
-func hello(w http.ResponseWriter, r *http.Request) {
-    io.WriteString(w, "Hello World!")
-}
+var appName = "validatepolicy"
 
 func main() {
-    http.HandleFunc("/", hello)
-    http.ListenAndServe(":80", nil)
+        fmt.Printf("Starting %v\n", appName)
+        initializeBoltClient()
+        service.StartWebServer("6767")
+}
+
+func initializeBoltClient() {
+        service.DBClient = &dbclient.BoltClient{}
+        service.DBClient.OpenBoltDb()
+        service.DBClient.Seed()
 }
